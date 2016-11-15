@@ -3,16 +3,18 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3078C1701DDB501200263528 /* WYRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078C16F1DDB501200263528 /* WYRefreshArrowView.swift */; };
 		667A22D61DDB267E007A754D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22D51DDB267E007A754D /* AppDelegate.swift */; };
 		667A22D81DDB267E007A754D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22D71DDB267E007A754D /* ViewController.swift */; };
 		667A22DD1DDB267E007A754D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 667A22DC1DDB267E007A754D /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3078C16F1DDB501200263528 /* WYRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WYRefreshArrowView.swift; sourceTree = "<group>"; };
 		667A22D21DDB267E007A754D /* WYRefresh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WYRefresh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		667A22D51DDB267E007A754D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		667A22D71DDB267E007A754D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 				667A22E11DDB267E007A754D /* Info.plist */,
 				667A22D51DDB267E007A754D /* AppDelegate.swift */,
 				667A22D71DDB267E007A754D /* ViewController.swift */,
+				3078C16F1DDB501200263528 /* WYRefreshArrowView.swift */,
 				667A22DC1DDB267E007A754D /* Assets.xcassets */,
 			);
 			path = WYRefresh;
@@ -96,7 +99,7 @@
 				};
 			};
 			buildConfigurationList = 667A22CD1DDB267E007A754D /* Build configuration list for PBXProject "WYRefresh" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -131,6 +134,7 @@
 			files = (
 				667A22D81DDB267E007A754D /* ViewController.swift in Sources */,
 				667A22D61DDB267E007A754D /* AppDelegate.swift in Sources */,
+				3078C1701DDB501200263528 /* WYRefreshArrowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -29,6 +29,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         (10..<30).forEach({ (i) in
             data.add(String(format: "%ld", Int(i)))
         })
+
+        self.view.addSubview({
+            let arrowView = WYRefreshArrowView(frame: CGRect(origin: CGPoint(x: 200, y: 200), size: WYRefreshArrowView.constSize))
+            arrowView.backgroundColor = UIColor.clear
+            return arrowView
+            }())
     }
 
     // MARK: - UITableViewDataSource
