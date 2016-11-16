@@ -11,6 +11,8 @@
 		667A22D61DDB267E007A754D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22D51DDB267E007A754D /* AppDelegate.swift */; };
 		667A22D81DDB267E007A754D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22D71DDB267E007A754D /* ViewController.swift */; };
 		667A22DD1DDB267E007A754D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 667A22DC1DDB267E007A754D /* Assets.xcassets */; };
+		667A22E81DDC074D007A754D /* WYRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22E71DDC074D007A754D /* WYRefreshView.swift */; };
+		667A22EC1DDC3F29007A754D /* WYUIScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22EB1DDC3F29007A754D /* WYUIScrollView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +22,8 @@
 		667A22D71DDB267E007A754D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		667A22DC1DDB267E007A754D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		667A22E11DDB267E007A754D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		667A22E71DDC074D007A754D /* WYRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WYRefreshView.swift; sourceTree = "<group>"; };
+		667A22EB1DDC3F29007A754D /* WYUIScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WYUIScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,8 @@
 				667A22D51DDB267E007A754D /* AppDelegate.swift */,
 				667A22D71DDB267E007A754D /* ViewController.swift */,
 				3078C16F1DDB501200263528 /* WYRefreshArrowView.swift */,
+				667A22E71DDC074D007A754D /* WYRefreshView.swift */,
+				667A22EB1DDC3F29007A754D /* WYUIScrollView.swift */,
 				667A22DC1DDB267E007A754D /* Assets.xcassets */,
 			);
 			path = WYRefresh;
@@ -132,6 +138,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				667A22EC1DDC3F29007A754D /* WYUIScrollView.swift in Sources */,
+				667A22E81DDC074D007A754D /* WYRefreshView.swift in Sources */,
 				667A22D81DDB267E007A754D /* ViewController.swift in Sources */,
 				667A22D61DDB267E007A754D /* AppDelegate.swift in Sources */,
 				3078C1701DDB501200263528 /* WYRefreshArrowView.swift in Sources */,
