@@ -8,8 +8,8 @@
 
 import UIKit
 
-enum WYRefreshState {
-    case stopped, triggered, loading, all
+enum WYRefreshState: Int {
+    case stopped = 0, triggered, loading, all
 }
 
 enum WYRefreshPosition {
@@ -26,13 +26,14 @@ class WYRefreshView: UIView {
     let subTitleLabel = UILabel()
     var activityIndicatorView: UIActivityIndicatorView?
     var activityIndicatorViewStyle: UIActivityIndicatorViewStyle = .gray
+    var arrowView: WYRefreshArrowView!
 
     var state: WYRefreshState = .stopped
     var position: WYRefreshPosition = .top
 
     var titles = ["Pull to refresh...", "Release to refresh...", "Loading..."]
     var subtitles = ["", "", "", ""]
-    var viewForState: Array<AnyObject> = ["", "", "", ""]
+    var viewForState = Array<UIView>(repeating: UIView(), count: 4)
 
     weak var scrollView: UIScrollView?
     var originalTopInset: CGFloat?
@@ -92,92 +93,70 @@ class WYRefreshView: UIView {
     }
 
     override func layoutSubviews() {
-        viewForState.forEach { (obj) in
-            if obj.isKind(of: UIView.class) {
-                obj.removeFromSuperview()
+        viewForState.forEach { (view) in
+            view.removeFromSuperview()
+        }
+
+        let customView = viewForState[state.rawValue]
+        let hasCustomView = true
+        titleLabel.isHidden = hasCustomView
+        subTitleLabel.isHidden = hasCustomView
+        arrowView.isHidden = hasCustomView
+
+        if hasCustomView {
+            self.addSubview(customView)
+            var viewBounds = customView.bounds
+            var origin = CGPoint(x: roundf((self.bounds.size.width - viewBounds.size.width) / 2), y: roundf((self.bounds.size.height - viewBounds.size.height) / 2))
+            customView.frame = CGRect(x: origin.x, y: origin.y, width: viewBounds.size.width, height: viewBounds.size.height)
+        } else {
+            switch state {
+            case .all:
+                break
+            case .stopped:
+                arrowView.alpha = 1
+                activityIndicatorView?.stopAnimating()
+                switch position {
+                case .top:
+                    rotateArrow(degrees: 0, hide: false)
+                    break
+                case .bottom:
+                    rotateArrow(degrees: CGFloat(M_PI), hide: false)
+                    break
+                }
+                break
+            case .triggered:
+                switch position {
+                case .top:
+                    rotateArrow(degrees: CGFloat(M_PI), hide: false)
+                    break
+                case .bottom:
+                    rotateArrow(degrees: 0, hide: false)
+                    break
+                }
+                break
+            case .loading:
+                activityIndicatorView?.startAnimating()
+                switch position {
+                case .top:
+                    rotateArrow(degrees: CGFloat(M_PI), hide: false)
+                    break
+                case .bottom:
+                    rotateArrow(degrees: 0, hide: false)
+                    break
+                }
+                break
+
             }
-        }
+            let leftViewWidth = max(arrowView.bounds.size.width, (activityIndicatorView?.bounds.size.width)!)
+            let margin: CGFloat = 10
+            let marginY: CGFloat = 2
+            let labelMaxWidth = self.bounds.size.width - margin - leftViewWidth
 
-        
-
-        for(id otherView in self.viewForState) {
-            if([otherView isKindOfClass:[UIView class]])
-            [otherView removeFromSuperview];
-        }
-
-        id customView = [self.viewForState objectAtIndex:self.state];
-        BOOL hasCustomView = [customView isKindOfClass:[UIView class]];
-
-        self.titleLabel.hidden = hasCustomView;
-        self.subtitleLabel.hidden = hasCustomView;
-        self.arrow.hidden = hasCustomView;
-
-        if(hasCustomView) {
-            [self addSubview:customView];
-            CGRect viewBounds = [customView bounds];
-            CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
-            [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
-        }
-        else {
-            switch (self.state) {
-            case SVPullToRefreshStateAll:
-            case SVPullToRefreshStateStopped:
-                self.arrow.alpha = 1;
-                [self.activityIndicatorView stopAnimating];
-                switch (self.position) {
-                case SVPullToRefreshPositionTop:
-                    [self rotateArrow:0 hide:NO];
-                    break;
-                case SVPullToRefreshPositionBottom:
-                    [self rotateArrow:(float)M_PI hide:NO];
-                    break;
-                }
-                break;
-
-            case SVPullToRefreshStateTriggered:
-                switch (self.position) {
-                case SVPullToRefreshPositionTop:
-                    [self rotateArrow:(float)M_PI hide:NO];
-                    break;
-                case SVPullToRefreshPositionBottom:
-                    [self rotateArrow:0 hide:NO];
-                    break;
-                }
-                break;
-
-            case SVPullToRefreshStateLoading:
-                [self.activityIndicatorView startAnimating];
-                switch (self.position) {
-                case SVPullToRefreshPositionTop:
-                    [self rotateArrow:0 hide:YES];
-                    break;
-                case SVPullToRefreshPositionBottom:
-                    [self rotateArrow:(float)M_PI hide:YES];
-                    break;
-                }
-                break;
-            }
-
-            CGFloat leftViewWidth = MAX(self.arrow.bounds.size.width,self.activityIndicatorView.bounds.size.width);
-
-            CGFloat margin = 10;
-            CGFloat marginY = 2;
-            CGFloat labelMaxWidth = self.bounds.size.width - margin - leftViewWidth;
-
-            self.titleLabel.text = [self.titles objectAtIndex:self.state];
-
-            NSString *subtitle = [self.subtitles objectAtIndex:self.state];
-            self.subtitleLabel.text = subtitle.length > 0 ? subtitle : nil;
-
-
-            CGSize titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
-                constrainedToSize:CGSizeMake(labelMaxWidth,self.titleLabel.font.lineHeight)
-                lineBreakMode:self.titleLabel.lineBreakMode];
-
-
-            CGSize subtitleSize = [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font
-                constrainedToSize:CGSizeMake(labelMaxWidth,self.subtitleLabel.font.lineHeight)
-                lineBreakMode:self.subtitleLabel.lineBreakMode];
+            titleLabel.text = titles[state.rawValue]
+            subTitleLabel.text = subtitles[state.rawValue]
+            let titleSize: CGSize = (titleLabel.text)!.boundingRect(with: CGSize(width: labelMaxWidth, height: titleLabel.font.lineHeight), options: [.usesLineFragmentOrigin], attributes: [NSFontAttributeName: titleLabel.font], context: nil).size
+            let subtitleSize:CGSize = (subTitleLabel.text)!.boundingRect(with: CGSize(width:labelMaxWidth, height: subTitleLabel.font.lineHeight), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: subTitleLabel.font], context: nil).size
+            let maxLabelWidth = max(titleSize.width, subtitleSize.width)
 
             CGFloat maxLabelWidth = MAX(titleSize.width,subtitleSize.width);
 
@@ -214,5 +193,16 @@ class WYRefreshView: UIView {
             self.activityIndicatorView.center = self.arrow.center;
         }
 
+    }
+
+    func rotateArrow(degrees: CGFloat, hide: Bool) {
+        UIView.animate(withDuration: 0.2,
+                       delay: 0,
+                       options: .allowUserInteraction,
+                       animations: { () -> Void in
+                        self.arrowView.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1)
+                        self.arrowView.layer.opacity = hide ? 0 : 1
+            },
+                       completion: nil)
     }
 }
