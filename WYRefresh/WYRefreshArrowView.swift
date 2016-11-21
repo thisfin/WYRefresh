@@ -10,7 +10,7 @@ import UIKit
 
 class WYRefreshArrowView: UIView {
     static let constSize = CGSize(width: 22, height: 48)
-    var arrorColor = UIColor.gray
+    var arrowColor = UIColor.gray
     
     override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()!
@@ -25,7 +25,7 @@ class WYRefreshArrowView: UIView {
         context.saveGState()
         context.clip()
 
-        let alphaGradientColors = [self.arrorColor.withAlphaComponent(0).cgColor, self.arrorColor.withAlphaComponent(1).cgColor];
+        let alphaGradientColors = [self.arrowColor.withAlphaComponent(0).cgColor, self.arrowColor.withAlphaComponent(1).cgColor];
         let alphaGradientLocations: [CGFloat] = [0, 0.9] // 区段
         let alphaGradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: alphaGradientColors as CFArray, locations: alphaGradientLocations)!;
         context.drawLinearGradient(alphaGradient, start: CGPoint.zero, end: CGPoint(x: 0, y: rect.size.height), options: CGGradientDrawingOptions(rawValue: 0));
