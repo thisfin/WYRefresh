@@ -19,93 +19,28 @@ enum WYRefreshPosition {
     case top, bottom
 }
 
+private var myContext = 0
+
 class WYRefreshView: UIView {
     static let wyRefreshViewHeight: CGFloat = 60
 
-    var pullToRefreshActionHandler:SimpleBlockNoneParameter?
+    dynamic override var frame: CGRect {
+        get {
+            return super.frame
+        }
+        set {
+            super.frame = newValue
+        }
+    }
 
-    var arrowColor: UIColor {
-        get {
-            return self.arrowView.arrowColor;
-        }
-        set {
-            self.arrowView.arrowColor = newValue
-            self.arrowView.setNeedsLayout()
-        }
-    }
-    var arrowView: WYRefreshArrowView! {
-        if self.arrowView == nil {
-            let view = WYRefreshArrowView(frame: CGRect(x: 0, y: self.bounds.size.height - 54, width: 22, height: 48))
-            view.backgroundColor = .clear
-            self.addSubview(view)
-            return view
-        }
-        return self.arrowView
-    }
-    var textColor: UIColor {
-        get {
-            return self.titleLabel.textColor
-        }
-        set {
-            self.titleLabel.textColor = newValue
-            self.subtitleLabel.textColor = newValue
-        }
-    }
-    var titleLabel: UILabel! {
-        if self.titleLabel == nil {
-            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 210, height: 20))
-            label.text = NSLocalizedString("Pull to refresh...", comment: "")
-            label.font = UIFont .boldSystemFont(ofSize: 14)
-            label.backgroundColor = UIColor.clear
-            label.textColor = .darkGray
-            self.addSubview(label)
-            return label
-        }
-        return self.titleLabel
-    }
-    var subtitleLabel: UILabel! {
-        if self.subtitleLabel == nil {
-            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 210, height: 20))
-            label.font = UIFont.systemFont(ofSize: 12)
-            label.backgroundColor = UIColor.clear
-            label.textColor = .darkGray
-            self.addSubview(label)
-            return label
-        }
-        return self.subtitleLabel
-    }
-    var activityIndicatorView: UIActivityIndicatorView! {
-        if self.activityIndicatorView == nil {
-            let view = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-            view.hidesWhenStopped = true
-            view.addSubview(self.activityIndicatorView)
-            return view
-        }
-        return self.activityIndicatorView
-    }
-    var activityIndicatorViewColor: UIColor {
-        get {
-            return self.activityIndicatorView.color!
-        }
-        set(color) {
-            self.activityIndicatorView.color = color
-        }
-    }
-    var activityIndicatorViewStyle: UIActivityIndicatorViewStyle {
-        get {
-            return self.activityIndicatorView.activityIndicatorViewStyle
-        }
-        set(style) {
-            self.activityIndicatorView.activityIndicatorViewStyle = style
-        }
-    }
+    var pullToRefreshActionHandler: SimpleBlockNoneParameter?
 
     var state: WYRefreshState = .stopped
     var position: WYRefreshPosition = .top
 
-    var titles = ["Pull to refresh...", "Release to refresh...", "Loading..."]
-    var subtitles: Array<String> = ["", "", "", ""]
-    var viewForState = Array<UIView>(repeating: UIView(), count: 4)
+    var titles: [String] = ["Pull to refresh...", "Release to refresh...", "Loading..."]
+    var subtitles = [String](repeating: "", count: 4)
+    var viewForState = Array<UIView>(repeating: WYEmptyView(), count:4)
 
     weak var scrollView: UIScrollView?
     var originalTopInset: CGFloat?
@@ -116,27 +51,70 @@ class WYRefreshView: UIView {
     var showsDateLabel = false
     var isObserving = false
 
-    func setTitle(_ title: String, forState state: WYRefreshState) {
+    lazy var arrowView: WYRefreshArrowView = {
+        let view = WYRefreshArrowView(frame: CGRect(x: 0, y: self.bounds.size.height - 54, width: 22, height: 48))
+        view.backgroundColor = .clear
+        self.addSubview(view)
+        return view
+    }()
+    lazy var activityIndicatorView: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        view.hidesWhenStopped = true
+        view.addSubview(self.activityIndicatorView)
+        return view
+    }()
+    lazy var titleLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 210, height: 20))
+        label.text = NSLocalizedString("Pull to refresh...", comment: "")
+        label.font = UIFont .boldSystemFont(ofSize: 14)
+        label.backgroundColor = UIColor.clear
+        label.textColor = .darkGray
+        self.addSubview(label)
+        return label
+    }()
+    lazy var subtitleLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 210, height: 20))
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.backgroundColor = UIColor.clear
+        label.textColor = .darkGray
+        self.addSubview(label)
+        return label
+    }()
 
+    var arrowColor: UIColor {
+        get {
+            return arrowView.arrowColor;
+        }
+        set {
+            arrowView.arrowColor = newValue
+            arrowView.setNeedsLayout()
+        }
     }
-
-    func setSubTitle(_ title: String, forState state: WYRefreshState) {
-
+    var textColor: UIColor {
+        get {
+            return titleLabel.textColor
+        }
+        set {
+            titleLabel.textColor = newValue
+            subtitleLabel.textColor = newValue
+        }
     }
-
-    func setCustomView(_ view: UIView, forState state: WYRefreshState) {
-
+    var activityIndicatorViewColor: UIColor {
+        get {
+            return activityIndicatorView.color!
+        }
+        set {
+            activityIndicatorView.color = newValue
+        }
     }
-
-    func startAnimating() {
-
+    var activityIndicatorViewStyle: UIActivityIndicatorViewStyle {
+        get {
+            return activityIndicatorView.activityIndicatorViewStyle
+        }
+        set {
+            activityIndicatorView.activityIndicatorViewStyle = newValue
+        }
     }
-
-    func stopAnimating() {
-
-    }
-
-
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -149,105 +127,106 @@ class WYRefreshView: UIView {
     }
 
     private func initSubview() {
-        self.autoresizingMask = .flexibleWidth
+        autoresizingMask = .flexibleWidth
+        activityIndicatorViewStyle = .gray
+        textColor = .darkGray
     }
 
     override func willMove(toSuperview newSuperview: UIView?) {
-        if self.superview != nil && newSuperview != nil {
-            let scrollView: UIScrollView = self.superview as! UIScrollView
-            if scrollView.showsPullToRefresh && self.isObserving {
+        if superview != nil && newSuperview != nil {
+            let scrollView: UIScrollView = superview as! UIScrollView
+            if scrollView.showsPullToRefresh && isObserving {
                 scrollView.removeObserver(self, forKeyPath: "contentOffset")
                 scrollView.removeObserver(self, forKeyPath: "contentSize")
                 scrollView.removeObserver(self, forKeyPath: "frame")
-                self.isObserving = false
+                isObserving = false
             }
         }
     }
 
     override func layoutSubviews() {
         viewForState.forEach { (view) in
-            view.removeFromSuperview()
+            if !(view is WYEmptyView) {
+                view.removeFromSuperview()
+            }
         }
 
         let customView = viewForState[state.rawValue]
-        let hasCustomView = true
+        let hasCustomView = !(customView is WYEmptyView)
         titleLabel.isHidden = hasCustomView
         subtitleLabel.isHidden = hasCustomView
         arrowView.isHidden = hasCustomView
 
         if hasCustomView {
-            self.addSubview(customView)
+            addSubview(customView)
             let viewBounds = customView.bounds
-            let origin = CGPoint(x: CGFloat(roundf(Float((self.bounds.size.width - viewBounds.size.width) / 2))),
-                                 y: CGFloat(roundf(Float((self.bounds.size.height - viewBounds.size.height) / 2))))
+            let origin = CGPoint(x: CGFloat(roundf(Float((bounds.size.width - viewBounds.size.width) / 2))),
+                                 y: CGFloat(roundf(Float((bounds.size.height - viewBounds.size.height) / 2))))
             customView.frame = CGRect(x: origin.x, y: origin.y, width: viewBounds.size.width, height: viewBounds.size.height)
         } else {
             switch state {
-            case .all:
-                break
+            case .all: // 同stop
+                arrowView.alpha = 1
+                activityIndicatorView.stopAnimating()
+                switch position {
+                case .top:
+                    rotateArrow(degrees: 0, hide: false)
+                case .bottom:
+                    rotateArrow(degrees: CGFloat(M_PI), hide: false)
+                }
             case .stopped:
                 arrowView.alpha = 1
                 activityIndicatorView.stopAnimating()
                 switch position {
                 case .top:
                     rotateArrow(degrees: 0, hide: false)
-                    break
                 case .bottom:
                     rotateArrow(degrees: CGFloat(M_PI), hide: false)
-                    break
                 }
-                break
             case .triggered:
                 switch position {
                 case .top:
                     rotateArrow(degrees: CGFloat(M_PI), hide: false)
-                    break
                 case .bottom:
                     rotateArrow(degrees: 0, hide: false)
-                    break
                 }
-                break
             case .loading:
                 activityIndicatorView.startAnimating()
                 switch position {
                 case .top:
-                    rotateArrow(degrees: CGFloat(M_PI), hide: false)
-                    break
+                    rotateArrow(degrees: 0, hide: true)
                 case .bottom:
-                    rotateArrow(degrees: 0, hide: false)
-                    break
+                    rotateArrow(degrees: CGFloat(M_PI), hide: true)
                 }
-                break
-
             }
             let leftViewWidth = max(arrowView.bounds.size.width, activityIndicatorView.bounds.size.width)
             let margin: CGFloat = 10
             let marginY: CGFloat = 2
-            let labelMaxWidth = self.bounds.size.width - margin - leftViewWidth
+            let labelMaxWidth = bounds.size.width - margin - leftViewWidth
 
             titleLabel.text = titles[state.rawValue]
             subtitleLabel.text = subtitles[state.rawValue]
             let titleSize: CGSize = (titleLabel.text)!.boundingRect(with: CGSize(width: labelMaxWidth, height: titleLabel.font.lineHeight), options: [.usesLineFragmentOrigin], attributes: [NSFontAttributeName: titleLabel.font], context: nil).size
-            let subtitleSize:CGSize = (subTitleLabel.text)!.boundingRect(with: CGSize(width:labelMaxWidth, height: subTitleLabel.font.lineHeight), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: subTitleLabel.font], context: nil).size
+            let subtitleSize:CGSize = (subtitleLabel.text)!.boundingRect(with: CGSize(width:labelMaxWidth, height: subtitleLabel.font.lineHeight), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: subtitleLabel.font], context: nil).size
             let maxLabelWidth = max(titleSize.width, subtitleSize.width)
             let totalMaxWidth = leftViewWidth + maxLabelWidth + maxLabelWidth > 0 ? margin : 0
-            let labelX = (self.bounds.size.width / 2) - totalMaxWidth / 2 + leftViewWidth + margin
+            let labelX = (bounds.size.width / 2) - totalMaxWidth / 2 + leftViewWidth + margin
             if subtitleSize.height > 0 {
                 let totalHeight = titleSize.height + subtitleSize.height + marginY
-                let minY = self.bounds.size.height / 2 - totalHeight / 2
+                let minY = bounds.size.height / 2 - totalHeight / 2
                 let titleY = minY
                 titleLabel.frame = CGRect(x: labelX, y: titleY, width: titleSize.width, height: titleSize.height).integral
-                subTitleLabel.frame = CGRect(x: labelX, y: titleY + titleSize.height + marginY, width: subtitleSize.width, height: subtitleSize.height).integral
+                subtitleLabel.frame = CGRect(x: labelX, y: titleY + titleSize.height + marginY, width: subtitleSize.width, height: subtitleSize.height).integral
             } else {
                 let totalHeight = titleSize.height
-                let minY = self.bounds.size.height / 2 - totalHeight / 2
+                let minY = bounds.size.height / 2 - totalHeight / 2
                 let titleY = minY
                 titleLabel.frame = CGRect(x: labelX, y: titleY, width: titleSize.width, height: titleSize.height).integral
-                subTitleLabel.frame = CGRect(x: labelX, y: titleY + titleSize.height + marginY, width: subtitleSize.width, height: subtitleSize.height).integral
+                subtitleLabel.frame = CGRect(x: labelX, y: titleY + titleSize.height + marginY, width: subtitleSize.width, height: subtitleSize.height).integral
             }
-            let arrowX = self.bounds.size.width / 2 - totalMaxWidth / 2 + (leftViewWidth - arrowView.bounds.size.width) / 2
+            let arrowX = bounds.size.width / 2 - totalMaxWidth / 2 + (leftViewWidth - arrowView.bounds.size.width) / 2
             arrowView.frame = CGRect(x: arrowX,
-                                     y: self.bounds.size.height / 2 - arrowView.bounds.size.height / 2,
+                                     y: bounds.size.height / 2 - arrowView.bounds.size.height / 2,
                                      width: arrowView.bounds.size.width,
                                      height: arrowView.bounds.size.height)
             activityIndicatorView.center = arrowView.center
@@ -255,15 +234,13 @@ class WYRefreshView: UIView {
     }
 
     func resetScrollViewContentInset() {
-        var currentInsets = self.scrollView?.contentInset
+        var currentInsets = scrollView?.contentInset
         switch position {
         case .top:
             currentInsets?.top = originalTopInset!
-            break
         case .bottom:
             currentInsets?.bottom = originalBottomInset!
             currentInsets?.top = originalTopInset!
-            break
         }
         setScrollViewContentInset(currentInsets!)
     }
@@ -278,230 +255,171 @@ class WYRefreshView: UIView {
     }
 
     func setScrollViewContentInsetForLoading() {
-        let offset = max((self.scrollView?.contentOffset.y)! * -1, 0)
-        var currentInsets = self.scrollView?.contentInset
+        let offset = max((scrollView?.contentOffset.y)! * -1, 0)
+        var currentInsets = scrollView?.contentInset
         switch position {
         case .top:
-            currentInsets?.top = min(offset, self.originalTopInset! + self.bounds.size.height)
-            break
+            currentInsets?.top = min(offset, originalTopInset! + bounds.size.height)
         case .bottom:
-            currentInsets?.bottom = min(offset, self.originalBottomInset! + self.bounds.size.height)
-            break
+            currentInsets?.bottom = min(offset, originalBottomInset! + bounds.size.height)
         }
         setScrollViewContentInset(currentInsets!)
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-//        if keyPath == "contentOffset" {
-//            self.scrollViewDidScroll(
-//        }
-    }
+        if context == &myContext {
+            //TODO: 两个属性貌似并不存在
+            if keyPath == "contentOffset" {
+                //            scrollViewDidScroll(contentOffset: change[NSKeyValueChangeKey.newKey])
+            } else if keyPath == "contentSize" {
 
-//    - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-//    if([keyPath isEqualToString:@"contentOffset"])
-//    [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
-//    else if([keyPath isEqualToString:@"contentSize"]) {
-//    [self layoutSubviews];
-//
-//    CGFloat yOrigin;
-//    switch (self.position) {
-//    case SVPullToRefreshPositionTop:
-//    yOrigin = -SVPullToRefreshViewHeight;
-//    break;
-//    case SVPullToRefreshPositionBottom:
-//    yOrigin = MAX(self.scrollView.contentSize.height, self.scrollView.bounds.size.height);
-//    break;
-//    }
-//    self.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
-//    }
-//    else if([keyPath isEqualToString:@"frame"])
-//    [self layoutSubviews];
-//
-//    }
-
-//    func scrollViewDidScroll(contentOffset: CGPoint) {
-//        if self.state != .loading {
-//            var scrollOffsetThreshold: CGFloat = 0
-//            switch position {
-//            case .top:
-//                scrollOffsetThreshold = self.frame.origin.y - self.originalTopInset!
-//                break
-//            case .bottom:
-//                scrollOffsetThreshold = max((self.scrollView?.contentSize.height)! - (self.scrollView?.bounds.size.height)!, 0) + self.bounds.size.height + self.originalBottomInset!
-//                break
-//            }
-//
-//            if !(self.scrollView?.isDragging)! && self.state == .triggered {
-//                self.state = .loading
-//            } else if contentOffset.y < scrollOffsetThreshold && (self.scrollView?.isDragging)! && self.state == .stopped && position == .top {
-//                self.state = .triggered
-//            } else if contentOffset.y >= scrollOffsetThreshold && self.state != .stopped && position == .top {
-//                self.state = .stopped
-//            } else if contentOffset.y > scrollOffsetThreshold && (self.scrollView?.isDragging)! && self.state == .stopped && position == .bottom {
-//                self.state = .triggered
-//            } else if contentOffset.y <= scrollOffsetThreshold && self.state != .stopped && position == .bottom {
-//                self.state = .stopped
-//            }
-//        } else {
-//            var offset: CGFloat
-//            var contentInset: UIEdgeInsets
-//            switch self.position {
-//            case .top:
-//                offset = max((self.scrollView?.contentOffset.y)!, 0)
-//                offset = min(offset, self.originalTopInset! + self.bounds.size.height)
-//                contentInset = (self.scrollView?.contentInset)!
-//                self.scrollView?.contentInset = UIEdgeInsets(top: offset, left: contentInset.left, bottom: contentInset.bottom, right: contentInset.right)
-//                break
-//            case .bottom:
-//                if self.scrollView?.contentSize.height >= self.scrollView?.bounds.size.height {
-//                    offset = max((self.scrollView?.contentSize.height)! - (self.scrollView?.bounds.size.height)! + self.bounds.size.height, 0)
-//                    offset = min(offset, self.originalBottomInset + self.bounds.size.height)
-//                    contentInset = (self.scrollView?.contentInset)!
-//                    self.scrollView?.contentInset = UIEdgeInsets(top: contentInset.top, left: contentInset.left, bottom: offset, right: contentInset.right)
-//                } else if self.wasTriggeredByUser {
-//                    offset = min(self.bounds.size.height, self.originalBottomInset + self.bounds.size.height)
-//                    contentInset = self.scrollView?.contentInset
-//                    self.scrollView?.contentMode = UIEdgeInsets(top: 0 - offset, left: contentInset.left, bottom: contentInset.bottom, right: contentInset.right)
-//                }
-//                break
-//            }
-//        }
-//    }
-//
-//
-//
-//
-//    - (void)setTitle:(NSString *)title forState:(SVPullToRefreshState)state {
-//    if(!title)
-//    title = @"";
-//
-//    if(state == SVPullToRefreshStateAll)
-//    [self.titles replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[title, title, title]];
-//    else
-//    [self.titles replaceObjectAtIndex:state withObject:title];
-//
-//    [self setNeedsLayout];
-//    }
-
-//    - (void)setSubtitle:(NSString *)subtitle forState:(SVPullToRefreshState)state {
-//    if(!subtitle)
-//    subtitle = @"";
-//
-//    if(state == SVPullToRefreshStateAll)
-//    [self.subtitles replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[subtitle, subtitle, subtitle]];
-//    else
-//    [self.subtitles replaceObjectAtIndex:state withObject:subtitle];
-//
-//    [self setNeedsLayout];
-//    }
-
-//    - (void)setCustomView:(UIView *)view forState:(SVPullToRefreshState)state {
-//    id viewPlaceholder = view;
-//
-//    if(!viewPlaceholder)
-//    viewPlaceholder = @"";
-//
-//    if(state == SVPullToRefreshStateAll)
-//    [self.viewForState replaceObjectsInRange:NSMakeRange(0, 3) withObjectsFromArray:@[viewPlaceholder, viewPlaceholder, viewPlaceholder]];
-//    else
-//    [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
-//
-//    [self setNeedsLayout];
-//    }
-
-    func setSubtitle(title: String?, forState state: WYRefreshState) {
-        let str = title != nil ? title : ""
-//        if self.state == .all {
-//            repeatElement(str, count: 5)
-//            self.subtitles.replaceSubrange(0..<3, with: [str, str, str])
-//        } else {
-//            self.subtitles[self.state.rawValue] = str!
-//        }
-        self.setNeedsLayout()
-    }
-
-    func setCustomView(view: UIView, forState state: WYRefreshState) {
-        if state == .all {
-            // todo
+            } else if keyPath == "frame" {
+                layoutSubviews()
+            }
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
 
-    func setActivityIndicatorViewColor(color: UIColor) {
-        self.activityIndicatorView?.color = color
+    func scrollViewDidScroll(contentOffset: CGPoint) {
+        if state != .loading {
+            var scrollOffsetThreshold: CGFloat = 0
+            switch position {
+            case .top:
+                scrollOffsetThreshold = frame.origin.y - originalTopInset!
+            case .bottom:
+                scrollOffsetThreshold = max((scrollView?.contentSize.height)! - (scrollView?.bounds.size.height)!, 0) + bounds.size.height + originalBottomInset!
+            }
+
+            if !(scrollView?.isDragging)! && state == .triggered {
+                state = .loading
+            } else if contentOffset.y < scrollOffsetThreshold && (scrollView?.isDragging)! && state == .stopped && position == .top {
+                state = .triggered
+            } else if contentOffset.y >= scrollOffsetThreshold && state != .stopped && position == .top {
+                state = .stopped
+            } else if contentOffset.y > scrollOffsetThreshold && (scrollView?.isDragging)! && state == .stopped && position == .bottom {
+                state = .triggered
+            } else if contentOffset.y <= scrollOffsetThreshold && state != .stopped && position == .bottom {
+                state = .stopped
+            }
+        } else {
+            var offset: CGFloat
+            var contentInset: UIEdgeInsets
+            switch position {
+            case .top:
+                offset = max((scrollView?.contentOffset.y)!, 0)
+                offset = min(offset, originalTopInset! + bounds.size.height)
+                contentInset = (scrollView?.contentInset)!
+                scrollView?.contentInset = UIEdgeInsets(top: offset, left: contentInset.left, bottom: contentInset.bottom, right: contentInset.right)
+            case .bottom:
+                if (scrollView?.contentSize.height)! - (scrollView?.bounds.size.height)! >= CGFloat(0) {
+                    offset = max((scrollView?.contentSize.height)! - (scrollView?.bounds.size.height)! + bounds.size.height, 0)
+                    offset = min(offset, originalBottomInset! + bounds.size.height)
+                    contentInset = (scrollView?.contentInset)!
+                    scrollView?.contentInset = UIEdgeInsets(top: contentInset.top, left: contentInset.left, bottom: offset, right: contentInset.right)
+                } else if wasTriggeredByUser {
+                    offset = min(bounds.size.height, originalBottomInset! + bounds.size.height)
+                    contentInset = (scrollView?.contentInset)!
+                    scrollView?.contentInset = UIEdgeInsets(top: 0 - offset, left: contentInset.left, bottom: contentInset.bottom, right: contentInset.right)
+                }
+            }
+        }
     }
 
-    func setActivityIndicatorViewStyle(viewStyle: UIActivityIndicatorViewStyle) {
-        self.activityIndicatorView?.activityIndicatorViewStyle = viewStyle
+    func setTitle(_ title: String?, forState state: WYRefreshState) {
+        let str = title != nil ? title : ""
+
+        if state == .all {
+            // repeatElement(str, count: 3)
+            titles.replaceSubrange(0..<3, with: [str!, str!, str!])
+        } else {
+            titles[state.rawValue] = str!
+        }
+        setNeedsLayout()
+    }
+
+    func setSubtitle(_ title: String?, forState state: WYRefreshState) {
+        let str = title != nil ? title : ""
+        if state == .all {
+            subtitles.replaceSubrange(0..<3, with: [str!, str!, str!])
+        } else {
+            subtitles[state.rawValue] = str!
+        }
+        setNeedsLayout()
+    }
+
+    func setCustomView(_ view: UIView?, forState state: WYRefreshState) {
+        let viewPlaceholder: UIView = view != nil ? view!  : WYEmptyView()
+
+        if state == .all {
+            viewForState.replaceSubrange(0..<3, with: [viewPlaceholder, viewPlaceholder, viewPlaceholder])
+        } else {
+            viewForState[state.rawValue] = viewPlaceholder
+        }
+        setNeedsLayout()
     }
 
     func triggerRefresh() {
-        self.scrollView?.triggerPullToRefresh()
+        scrollView?.triggerPullToRefresh()
     }
 
     func startAnimating() {
-        switch self.position {
+        switch position {
         case .top:
-            if fabsf(Float((self.scrollView?.contentOffset.y)!)) < FLT_EPSILON {
-                self.scrollView?.setContentOffset(CGPoint(x: (self.scrollView?.contentOffset.x)!, y: 0 - self.frame.size.height), animated: true)
-                self.wasTriggeredByUser = false
+            if fabsf(Float((scrollView?.contentOffset.y)!)) < FLT_EPSILON {
+                scrollView?.setContentOffset(CGPoint(x: (scrollView?.contentOffset.x)!, y: 0 - frame.size.height), animated: true)
+                wasTriggeredByUser = false
             } else {
-                self.wasTriggeredByUser = true
+                wasTriggeredByUser = true
             }
-            break
         case .bottom:
-            if (fabsf(Float((self.scrollView?.contentOffset.y)!)) < FLT_EPSILON && self.scrollView?.contentSize.height < self.scrollView?.bounds.size.height) || fabsf(Float((self.scrollView?.contentOffset.y)! - (self.scrollView?.contentSize.height)! + (self.scrollView?.bounds.size.height)!)) < FLT_EPSILON {
-                self.scrollView?.setContentOffset(CGPoint(x: 0, y: max((self.scrollView?.contentSize.height)! - (self.scrollView?.bounds.size.height)!, 0) + self.frame.size.height), animated: true)
-                self.wasTriggeredByUser = false
+            if (fabsf(Float((scrollView?.contentOffset.y)!)) < FLT_EPSILON && (scrollView?.contentSize.height)! < (scrollView?.bounds.size.height)!) || fabsf(Float((scrollView?.contentOffset.y)! - (scrollView?.contentSize.height)! + (scrollView?.bounds.size.height)!)) < FLT_EPSILON {
+                scrollView?.setContentOffset(CGPoint(x: 0, y: max((scrollView?.contentSize.height)! - (scrollView?.bounds.size.height)!, 0) + frame.size.height), animated: true)
+                wasTriggeredByUser = false
             } else {
-                self.wasTriggeredByUser = true
+                wasTriggeredByUser = true
             }
-            break;
         }
-        self.state = .loading
+        state = .loading
     }
 
     func stopAnimating() {
-        self.state = .stopped
+        state = .stopped
 
-        switch self.position {
+        switch position {
         case .top:
-            if !self.wasTriggeredByUser {
-                self.scrollView?.setContentOffset(CGPoint(x: (self.scrollView?.contentOffset.x)!, y: 0 - self.originalTopInset!), animated: true)
+            if !wasTriggeredByUser {
+                scrollView?.setContentOffset(CGPoint(x: (scrollView?.contentOffset.x)!, y: 0 - originalTopInset!), animated: true)
             }
-            break
         case .bottom:
-            if !self.wasTriggeredByUser {
-                self.scrollView?.setContentOffset(CGPoint(x: (self.scrollView?.contentOffset.x)!, y: (self.scrollView?.contentSize.height)! - (self.scrollView?.bounds.size.height)! + self.originalBottomInset!), animated: true)
+            if !wasTriggeredByUser {
+                scrollView?.setContentOffset(CGPoint(x: (scrollView?.contentOffset.x)!, y: (scrollView?.contentSize.height)! - (scrollView?.bounds.size.height)! + originalBottomInset!), animated: true)
             }
-            break
         }
     }
 
     func setState(newState: WYRefreshState) {
-        if self.state == newState {
+        if state == newState {
             return
         }
 
-        let previousState = self.state
-        self.state = newState
+        let previousState = state
+        state = newState
 
-        self.setNeedsLayout()
-        self.layoutIfNeeded()
+        setNeedsLayout()
+        layoutIfNeeded()
 
-        switch self.state {
+        switch state {
         case .all:
-            break
+            resetScrollViewContentInset()
         case .stopped:
-            self.resetScrollViewContentInset()
-            break
-        case .triggered:
-            break
+            resetScrollViewContentInset()
+        case .triggered: break
         case .loading:
-            self.setScrollViewContentInsetForLoading()
-            if previousState == .triggered && (self.pullToRefreshActionHandler != nil) {
-                self.pullToRefreshActionHandler!()
+            setScrollViewContentInsetForLoading()
+            if previousState == .triggered && pullToRefreshActionHandler != nil {
+                pullToRefreshActionHandler!()
             }
-            break
         }
     }
 
@@ -511,8 +429,7 @@ class WYRefreshView: UIView {
                        options: .allowUserInteraction,
                        animations: { () -> Void in
                         self.arrowView.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1)
-                        self.arrowView.layer.opacity = hide ? 0 : 1
-            },
+                        self.arrowView.layer.opacity = hide ? 0 : 1},
                        completion: nil)
     }
 }

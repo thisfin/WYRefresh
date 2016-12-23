@@ -11,40 +11,41 @@ import UIKit
 extension UIScrollView {
     private struct AssociatedKeys {
         static var refreshViewName = "refreshView"
-        static var showsPullToRefreshName = "showsPullToRefresh"
+//        static var showsPullToRefreshName = "showsPullToRefresh"
     }
 
     var refreshView: WYRefreshView? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.refreshViewName) as? WYRefreshView
         }
-        set (value) {
-            if let newValue = value {
-                self.willChangeValue(forKey: "SVPullToRefreshView")
-                objc_setAssociatedObject(self, &AssociatedKeys.refreshViewName, newValue as WYRefreshView?, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-                self.didChangeValue(forKey: "SVPullToRefreshView")
+        set {
+            if let value = newValue {
+                willChangeValue(forKey: "SVPullToRefreshView")
+                objc_setAssociatedObject(self, &AssociatedKeys.refreshViewName, value as WYRefreshView?, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                didChangeValue(forKey: "SVPullToRefreshView")
             }
         }
     }
+
     var showsPullToRefresh: Bool {
         get {
             return !(refreshView?.isHidden)!
         }
-        set (value) {
-            refreshView?.isHidden = !value
-            if !value {
+        set {
+            refreshView?.isHidden = !newValue
+            if !newValue {
                 if (refreshView?.isObserving)! {
-                    self.removeObserver(refreshView!, forKeyPath: "contentOffset")
-                    self.removeObserver(refreshView!, forKeyPath: "contentSize")
-                    self.removeObserver(refreshView!, forKeyPath: "frame")
-                    //refreshView.reset
+                    removeObserver(refreshView!, forKeyPath: "contentOffset")
+                    removeObserver(refreshView!, forKeyPath: "contentSize")
+                    removeObserver(refreshView!, forKeyPath: "frame")
+                    refreshView?.resetScrollViewContentInset()
                     refreshView?.isObserving = false
                 }
             } else {
                 if !(refreshView?.isObserving)! {
-                    self.addObserver(refreshView!, forKeyPath: "contentOffset", options: .new, context: nil)
-                    self.addObserver(refreshView!, forKeyPath: "contentSize", options: .new, context: nil)
-                    self.addObserver(refreshView!, forKeyPath: "frame", options: .new, context: nil)
+                    addObserver(refreshView!, forKeyPath: "contentOffset", options: .new, context: nil)
+                    addObserver(refreshView!, forKeyPath: "contentSize", options: .new, context: nil)
+                    addObserver(refreshView!, forKeyPath: "frame", options: .new, context: nil)
                     refreshView?.isObserving = true
 
                     var yOrigin: CGFloat = 0
@@ -53,42 +54,40 @@ extension UIScrollView {
                         yOrigin = 0 - WYRefreshView.wyRefreshViewHeight
                         break
                     case .bottom:
-                        yOrigin = self.contentSize.height
+                        yOrigin = contentSize.height
                         break
                     }
-                    refreshView?.frame = CGRect(x: 0, y: yOrigin, width: self.bounds.size.width, height: WYRefreshView.wyRefreshViewHeight)
+                    refreshView?.frame = CGRect(x: 0, y: yOrigin, width: bounds.size.width, height: WYRefreshView.wyRefreshViewHeight)
                 }
             }
         }
     }
 
-    func addPullToRefreshWithActionHandler(actionHandler: () -> Void, position: WYRefreshPosition = .top) {
-        if self.refreshView == nil {
+    func addPullToRefreshWithActionHandler(position: WYRefreshPosition = .top, actionHandler: @escaping SimpleBlockNoneParameter) {
+        if refreshView == nil {
             var yOrigin: CGFloat = 0
             switch position {
             case .top:
                 yOrigin = 0 - WYRefreshView.wyRefreshViewHeight
-                break
             case .bottom:
-                yOrigin = self.contentSize.height
-                break
+                yOrigin = contentSize.height
             }
 
-            let view = WYRefreshView(frame: CGRect(x: 0, y: yOrigin, width: self.bounds.size.width, height: WYRefreshView.wyRefreshViewHeight))
-//            view.pullToRefreshActionHandler = actionHandler
+            let view = WYRefreshView(frame: CGRect(x: 0, y: yOrigin, width: bounds.size.width, height: WYRefreshView.wyRefreshViewHeight))
+            view.pullToRefreshActionHandler = actionHandler
             view.scrollView = self
-            self.addSubview(view)
+            addSubview(view)
 
-            view.originalTopInset = self.contentInset.top
-            view.originalBottomInset = self.contentInset.bottom
+            view.originalTopInset = contentInset.top
+            view.originalBottomInset = contentInset.bottom
             view.position = position
-            self.refreshView = view
-            self.showsPullToRefresh = true
+            refreshView = view
+            showsPullToRefresh = true
         }
     }
 
     func triggerPullToRefresh() {
-        self.refreshView?.state = .triggered
-        self.refreshView?.startAnimating()
+        refreshView?.state = .triggered
+        refreshView?.startAnimating()
     }
 }
