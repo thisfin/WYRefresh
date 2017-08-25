@@ -172,7 +172,7 @@ class WYRefreshView: UIView {
                 case .top:
                     rotateArrow(degrees: 0, hide: false)
                 case .bottom:
-                    rotateArrow(degrees: CGFloat(M_PI), hide: false)
+                    rotateArrow(degrees: .pi, hide: false)
                 }
             case .stopped:
                 arrowView.alpha = 1
@@ -181,12 +181,12 @@ class WYRefreshView: UIView {
                 case .top:
                     rotateArrow(degrees: 0, hide: false)
                 case .bottom:
-                    rotateArrow(degrees: CGFloat(M_PI), hide: false)
+                    rotateArrow(degrees: .pi, hide: false)
                 }
             case .triggered:
                 switch position {
                 case .top:
-                    rotateArrow(degrees: CGFloat(M_PI), hide: false)
+                    rotateArrow(degrees: .pi, hide: false)
                 case .bottom:
                     rotateArrow(degrees: 0, hide: false)
                 }
@@ -196,7 +196,7 @@ class WYRefreshView: UIView {
                 case .top:
                     rotateArrow(degrees: 0, hide: true)
                 case .bottom:
-                    rotateArrow(degrees: CGFloat(M_PI), hide: true)
+                    rotateArrow(degrees: .pi, hide: true)
                 }
             }
             let leftViewWidth = max(arrowView.bounds.size.width, activityIndicatorView.bounds.size.width)
@@ -206,8 +206,8 @@ class WYRefreshView: UIView {
 
             titleLabel.text = titles[state.rawValue]
             subtitleLabel.text = subtitles[state.rawValue]
-            let titleSize: CGSize = (titleLabel.text)!.boundingRect(with: CGSize(width: labelMaxWidth, height: titleLabel.font.lineHeight), options: [.usesLineFragmentOrigin], attributes: [NSFontAttributeName: titleLabel.font], context: nil).size
-            let subtitleSize:CGSize = (subtitleLabel.text)!.boundingRect(with: CGSize(width:labelMaxWidth, height: subtitleLabel.font.lineHeight), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: subtitleLabel.font], context: nil).size
+            let titleSize: CGSize = (titleLabel.text)!.boundingRect(with: CGSize(width: labelMaxWidth, height: titleLabel.font.lineHeight), options: [.usesLineFragmentOrigin], attributes: [NSAttributedStringKey.font: titleLabel.font], context: nil).size
+            let subtitleSize:CGSize = (subtitleLabel.text)!.boundingRect(with: CGSize(width:labelMaxWidth, height: subtitleLabel.font.lineHeight), options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: subtitleLabel.font], context: nil).size
             let maxLabelWidth = max(titleSize.width, subtitleSize.width)
             let totalMaxWidth = leftViewWidth + maxLabelWidth + maxLabelWidth > 0 ? margin : 0
             let labelX = (bounds.size.width / 2) - totalMaxWidth / 2 + leftViewWidth + margin
@@ -366,14 +366,14 @@ class WYRefreshView: UIView {
     func startAnimating() {
         switch position {
         case .top:
-            if fabsf(Float((scrollView?.contentOffset.y)!)) < FLT_EPSILON {
+            if fabsf(Float((scrollView?.contentOffset.y)!)) < Float.ulpOfOne {
                 scrollView?.setContentOffset(CGPoint(x: (scrollView?.contentOffset.x)!, y: 0 - frame.size.height), animated: true)
                 wasTriggeredByUser = false
             } else {
                 wasTriggeredByUser = true
             }
         case .bottom:
-            if (fabsf(Float((scrollView?.contentOffset.y)!)) < FLT_EPSILON && (scrollView?.contentSize.height)! < (scrollView?.bounds.size.height)!) || fabsf(Float((scrollView?.contentOffset.y)! - (scrollView?.contentSize.height)! + (scrollView?.bounds.size.height)!)) < FLT_EPSILON {
+            if (fabsf(Float((scrollView?.contentOffset.y)!)) < Float.ulpOfOne && (scrollView?.contentSize.height)! < (scrollView?.bounds.size.height)!) || fabsf(Float((scrollView?.contentOffset.y)! - (scrollView?.contentSize.height)! + (scrollView?.bounds.size.height)!)) < Float.ulpOfOne {
                 scrollView?.setContentOffset(CGPoint(x: 0, y: max((scrollView?.contentSize.height)! - (scrollView?.bounds.size.height)!, 0) + frame.size.height), animated: true)
                 wasTriggeredByUser = false
             } else {
