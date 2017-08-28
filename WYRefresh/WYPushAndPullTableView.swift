@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PushAndPullTableView: UITableView {
+class WYPushAndPullTableView: UITableView {
     var pullView: WYRefreshView?
 
     var showsPullToRefresh: Bool {
