@@ -8,22 +8,18 @@
 
 import UIKit
 
-enum WYPushState: Int {
-    case stopped = 0, triggered, loading, all = 10
-}
-
 class WYPushView: UIView {
-    static let pushViewHeight: CGFloat = 60
+    static let viewHeight: CGFloat = 60
 
-    var activityIndicatorViewStyle: UIActivityIndicatorViewStyle {
-        get {
-            return activityIndicatorView.activityIndicatorViewStyle
-        }
-        set {
-            activityIndicatorView.activityIndicatorViewStyle = newValue
-        }
-    }
-    var state: WYPushState = .stopped {
+    weak var scrollView: UIScrollView?
+    var pushHandler: (() -> Void)?
+    var enabled: Bool = true
+    var originalBottomInset: CGFloat = 0
+    var isObserving = false
+
+    private var viewForState: [UIView?] = [nil, nil, nil, nil]
+
+    var state: WYRefreshState = .stopped {
         didSet {
             if state == oldValue {
                 return
@@ -60,20 +56,22 @@ class WYPushView: UIView {
             }
         }
     }
-    weak var scrollView: UIScrollView?
-    var enabled: Bool = true
-    var originalBottomInset: CGFloat?
-    var pushHandler: (() -> Void)?
-    var isObserving: Bool = false
 
-    private var viewForState: [UIView?] = [nil, nil, nil, nil]
-    // 如果这里用非 lazy 的时候, self. 会报错, 初始化时机的问题
-    lazy private var activityIndicatorView: UIActivityIndicatorView = {
+    lazy private var activityIndicatorView: UIActivityIndicatorView = { // 如果这里用非 lazy 的时候, self. 会报错, 初始化时机的问题
         let activityIndicatorView = UIActivityIndicatorView.init(activityIndicatorStyle: .white)
         activityIndicatorView.hidesWhenStopped = true
         addSubview(activityIndicatorView)
         return activityIndicatorView
     }()
+
+    var activityIndicatorViewStyle: UIActivityIndicatorViewStyle {
+        get {
+            return activityIndicatorView.activityIndicatorViewStyle
+        }
+        set {
+            activityIndicatorView.activityIndicatorViewStyle = newValue
+        }
+    }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -89,6 +87,7 @@ class WYPushView: UIView {
         if let scrollView = superview as? UIScrollView, let showsPush = scrollView.showsPush, showsPush, newSuperview == nil, isObserving {
             scrollView.removeObserver(self, forKeyPath: "contentOffset")
             scrollView.removeObserver(self, forKeyPath: "contentSize")
+            isObserving = false
         }
     }
 
@@ -99,14 +98,15 @@ class WYPushView: UIView {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let keyPath = keyPath {
             if keyPath == "contentOffset" {
-                if let value = change[.newKey].CGP
-
-                scrollViewDidScroll(contentOffset: change[.newKey])
-        [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
-        } else if [keyPath isEqualToString:@"contentSize"] {
-            [self layoutSubviews];
-            self.frame = CGRectMake(0, self.scrollView.contentSize.height, self.bounds.size.width, SVInfiniteScrollingViewHeight);
-        }
+                if let value = change?[.newKey] as? CGPoint {
+                    scrollViewDidScroll(contentOffset: value)
+                }
+            } else if keyPath == "contentSize" {
+                layoutSubviews()
+                if let scrollView = scrollView {
+                    frame = CGRect(x: 0, y: scrollView.contentSize.height, width: bounds.width, height: WYPushView.viewHeight)
+                }
+            }
         }
     }
 
@@ -125,15 +125,15 @@ class WYPushView: UIView {
     }
 
     func resetScrollViewContentInset() {
-        if var currentInsets = scrollView?.contentInset, let originalBottomInset = originalBottomInset {
+        if var currentInsets = scrollView?.contentInset {
             currentInsets.bottom = originalBottomInset
             setScrollViewContentInset(contentInset: currentInsets)
         }
     }
 
     func setScrollViewContentInsetForInfiniteScrolling() {
-        if var currentInsets = scrollView?.contentInset, let originalBottomInset = originalBottomInset {
-            currentInsets.bottom = originalBottomInset + WYPushView.pushViewHeight
+        if var currentInsets = scrollView?.contentInset {
+            currentInsets.bottom = originalBottomInset + WYPushView.viewHeight
             setScrollViewContentInset(contentInset: currentInsets)
         }
     }
@@ -146,11 +146,12 @@ class WYPushView: UIView {
         })
     }
 
-    func setCustomView(view: UIView?, state: WYPushState) {
+    func setCustomView(view: UIView?, state: WYRefreshState) {
         if state == .all {
             viewForState.replaceSubrange(0...2, with: [view, view, view])
         } else {
-            viewForState.replaceSubrange((state.rawValue)...(state.rawValue + 1), with: [view])
+            viewForState[state.rawValue] = view
+            // viewForState.replaceSubrange((state.rawValue)...(state.rawValue + 1), with: [view])
             // viewForState.replaceSubrange(Range<Int>.init(NSRange.init(location: state.rawValue, length: 1))!, with: [view])
         }
     }

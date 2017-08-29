@@ -31,7 +31,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         })
 
         self.view.addSubview({
-            let arrowView = WYRefreshArrowView(frame: CGRect(origin: CGPoint(x: 200, y: 200), size: WYRefreshArrowView.constSize))
+            let arrowView = WYPullArrowView(frame: CGRect(origin: CGPoint(x: 200, y: 200), size: WYPullArrowView.viewSize))
             arrowView.backgroundColor = UIColor.clear
             return arrowView
             }())

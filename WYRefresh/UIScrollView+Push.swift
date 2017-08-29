@@ -15,9 +15,9 @@ extension UIScrollView {
             return UIScrollView.pushViewAssociated[self]
         }
         set {
-            willChangeValue(forKey: "WYPushValue")
+            willChangeValue(forKey: "WYPushView")
             UIScrollView.pushViewAssociated[self] = newValue
-            didChangeValue(forKey: "WYPushValue")
+            didChangeValue(forKey: "WYPushView")
         }
     }
 
@@ -45,19 +45,17 @@ extension UIScrollView {
                         pushView.setScrollViewContentInsetForInfiniteScrolling()
                         pushView.isObserving = true
                         pushView.setNeedsLayout()
-                        pushView.frame = CGRect.init(x: 0, y: contentSize.height, width: pushView.bounds.width, height: WYPushView.pushViewHeight)
+                        pushView.frame = CGRect.init(x: 0, y: contentSize.height, width: pushView.bounds.width, height: WYPushView.viewHeight)
                     }
                 }
             }
         }
     }
 
-//        - (void)addInfiniteScrollingWithActionHandler:(void (^)(void))actionHandler;
-//        - (void);
     func addPushWithActionHandler(actionHandler: @escaping () -> Void) {
         if pushView == nil {
             pushView = {
-                let view = WYPushView.init(frame: CGRect.init(x: 0, y: contentSize.height, width: bounds.width, height: WYPushView.pushViewHeight))
+                let view = WYPushView.init(frame: CGRect.init(x: 0, y: contentSize.height, width: bounds.width, height: WYPushView.viewHeight))
                 view.pushHandler = actionHandler
                 view.scrollView = self
                 view.originalBottomInset = contentInset.bottom
