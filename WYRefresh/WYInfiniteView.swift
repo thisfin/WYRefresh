@@ -1,5 +1,5 @@
 //
-//  WYPushView.swift
+//  WYInfiniteView.swift
 //  WYRefresh
 //
 //  Created by wenyou on 2017/8/28.
@@ -8,12 +8,11 @@
 
 import UIKit
 
-class WYPushView: UIView {
+class WYInfiniteView: UIView {
     static let viewHeight: CGFloat = 60
 
     weak var scrollView: UIScrollView?
-    var pushHandler: (() -> Void)?
-    var enabled: Bool = true
+    var infiniteHandler: (() -> Void)?
     var originalBottomInset: CGFloat = 0
     var isObserving = false
 
@@ -51,7 +50,7 @@ class WYPushView: UIView {
                 }
             }
 
-            if let handler = pushHandler, oldValue == .triggered, state == .loading, enabled {
+            if let handler = infiniteHandler, oldValue == .triggered, state == .loading {
                 handler()
             }
         }
@@ -84,7 +83,7 @@ class WYPushView: UIView {
     }
 
     override func willMove(toSuperview newSuperview: UIView?) {
-        if let scrollView = superview as? UIScrollView, let showsPush = scrollView.showsPush, showsPush, newSuperview == nil, isObserving {
+        if let scrollView = superview as? UIScrollView, let showsInfinite = scrollView.showsInfinite, showsInfinite, newSuperview == nil, isObserving {
             scrollView.removeObserver(self, forKeyPath: "contentOffset")
             scrollView.removeObserver(self, forKeyPath: "contentSize")
             isObserving = false
@@ -104,14 +103,14 @@ class WYPushView: UIView {
             } else if keyPath == "contentSize" {
                 layoutSubviews()
                 if let scrollView = scrollView {
-                    frame = CGRect(x: 0, y: scrollView.contentSize.height, width: bounds.width, height: WYPushView.viewHeight)
+                    frame = CGRect(x: 0, y: scrollView.contentSize.height, width: bounds.width, height: WYInfiniteView.viewHeight)
                 }
             }
         }
     }
 
     private func scrollViewDidScroll(contentOffset: CGPoint) {
-        if let scrollView = scrollView, state != .loading, enabled {
+        if let scrollView = scrollView, state != .loading {
             let scrollOffsetThreshold = scrollView.contentSize.height - scrollView.bounds.height
 
             if !scrollView.isDragging && state == .triggered {
@@ -133,7 +132,7 @@ class WYPushView: UIView {
 
     func setScrollViewContentInsetForInfiniteScrolling() {
         if var currentInsets = scrollView?.contentInset {
-            currentInsets.bottom = originalBottomInset + WYPushView.viewHeight
+            currentInsets.bottom = originalBottomInset + WYInfiniteView.viewHeight
             setScrollViewContentInset(contentInset: currentInsets)
         }
     }
@@ -154,6 +153,7 @@ class WYPushView: UIView {
             // viewForState.replaceSubrange((state.rawValue)...(state.rawValue + 1), with: [view])
             // viewForState.replaceSubrange(Range<Int>.init(NSRange.init(location: state.rawValue, length: 1))!, with: [view])
         }
+        // didset func
     }
 
     private func triggerRefresh() {

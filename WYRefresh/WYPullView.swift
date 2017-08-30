@@ -51,6 +51,35 @@ class WYPullView: UIView {
         }
     }
 
+    var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+        dateFormatter.locale = Locale.current
+        return dateFormatter
+        }() {
+        didSet {
+            if showsDateLabel {
+                if let date = lastUpdatedDate {
+                    subtitleLabel.text = "Last Updated: \(dateFormatter.string(from: date))"
+                } else {
+                    subtitleLabel.text = "Last Updated: Never"
+                }
+            }
+        }
+    }
+
+    var lastUpdatedDate: Date? {
+        didSet {
+            showsDateLabel = true
+            if let date = lastUpdatedDate {
+                subtitleLabel.text = "Last Updated: \(dateFormatter.string(from: date))"
+            } else {
+                subtitleLabel.text = "Last Updated: Never"
+            }
+        }
+    }
+
     lazy private var arrowView: WYPullArrowView = {
         let view = WYPullArrowView(frame: CGRect(x: 0, y: self.bounds.size.height - 54, width: 22, height: 48))
         view.backgroundColor = .clear
@@ -60,7 +89,7 @@ class WYPullView: UIView {
     lazy private var activityIndicatorView: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         view.hidesWhenStopped = true
-        view.addSubview(self.activityIndicatorView)
+        self.addSubview(view)
         return view
     }()
     lazy private var titleLabel: UILabel = {
@@ -207,7 +236,7 @@ class WYPullView: UIView {
                 subtitleSize = text.boundingRect(with: CGSize(width:labelMaxWidth, height: subtitleLabel.font.lineHeight), options: .usesLineFragmentOrigin, attributes: [.font: subtitleLabel.font], context: nil).size
             }
             let maxLabelWidth = max(titleSize.width, subtitleSize.width) // 文字宽度
-            let totalMaxWidth = leftViewWidth + maxLabelWidth + maxLabelWidth > 0 ? marginX : 0 // 总宽度
+            let totalMaxWidth = leftViewWidth + maxLabelWidth + (maxLabelWidth > 0 ? marginX : 0) // 总宽度
             let labelX = (bounds.width / 2) - totalMaxWidth / 2 + leftViewWidth + marginX // label left
 
             let totalHeight = titleSize.height + subtitleSize.height + (subtitleSize.height == 0 ? 0 : marginY) // 总高度
@@ -270,10 +299,10 @@ class WYPullView: UIView {
                 originY = 0 - WYPullView.viewHeight
             case .bottom:
                 if let scrollView = scrollView {
-                    originY = max(scrollView.contentSize.height - scrollView.bounds.height, 0) + bounds.height + originalBottomInset
+                    originY = max(scrollView.contentSize.height, scrollView.bounds.height, 0)
                 }
             }
-            frame = CGRect(x: 0, y: originY, width: bounds.width, height: WYPushView.viewHeight)
+            frame = CGRect(x: 0, y: originY, width: bounds.width, height: WYPullView.viewHeight)
         } else if keyPath == "frame" {
             layoutSubviews()
         }

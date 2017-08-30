@@ -8,10 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    var tableView: UITableView!
-    let data = NSMutableArray()
-
+class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -19,36 +16,63 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.navigationController?.navigationBar.isTranslucent = false
 
         self.view.backgroundColor = UIColor.white
-        // Do any additional setup after loading the view, typically from a nib.
-        tableView = UITableView(frame: view.bounds, style: .plain)
-        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        tableView.dataSource = self;
-        tableView.delegate = self;
-        self.view.addSubview(tableView);
-
-        (10..<30).forEach({ (i) in
-            data.add(String(format: "%ld", Int(i)))
-        })
 
         self.view.addSubview({
-            let arrowView = WYPullArrowView(frame: CGRect(origin: CGPoint(x: 200, y: 200), size: WYPullArrowView.viewSize))
-            arrowView.backgroundColor = UIColor.clear
-            return arrowView
-            }())
+            let tableView = UITableView(frame: view.bounds, style: .plain)
+            tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            tableView.dataSource = self;
+            tableView.delegate = self;
+            return tableView
+        }())
     }
+}
 
-    // MARK: - UITableViewDataSource
+extension ViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
-
+        return 4
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: "")
-        if cell == nil {
-            cell = UITableViewCell(style: .value1, reuseIdentifier: "")
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: "")
+        var value: String?
+
+        switch indexPath.row {
+        case 0:
+            value = "pull top"
+        case 1:
+            value = "pull bottom"
+        case 2:
+            value = "infinite"
+        case 3:
+            value = "top and bottom"
+        default:
+            ()
         }
-        cell?.textLabel?.text = data.object(at: indexPath.row) as? String
-        return cell!;
+
+        if let label = cell.textLabel, let value = value {
+            label.text = value
+        }
+        return cell;
+    }
+}
+
+extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            if let navigationController = navigationController {
+                navigationController.pushViewController(TPullTopViewController(), animated: true)
+            }
+        case 1:
+            if let navigationController = navigationController {
+                navigationController.pushViewController(TPullBottomViewController(), animated: true)
+            }
+        case 2:
+            if let navigationController = navigationController {
+                navigationController.pushViewController(InfiniteViewController(), animated: true)
+            }
+        default:
+            ()
+        }
     }
 }

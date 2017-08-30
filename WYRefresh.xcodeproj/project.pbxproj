@@ -10,10 +10,14 @@
 		3078C1701DDB501200263528 /* WYPullArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078C16F1DDB501200263528 /* WYPullArrowView.swift */; };
 		661EC6C21F53AFA50005AC2E /* WYPullView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6C11F53AFA50005AC2E /* WYPullView.swift */; };
 		661EC6C41F53B51A0005AC2E /* WYObjectAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6C31F53B51A0005AC2E /* WYObjectAssociation.swift */; };
-		661EC6C61F53B9440005AC2E /* UIScrollView+Push.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6C51F53B9440005AC2E /* UIScrollView+Push.swift */; };
+		661EC6C61F53B9440005AC2E /* UIScrollView+Infinite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6C51F53B9440005AC2E /* UIScrollView+Infinite.swift */; };
 		661EC6C81F53BDDA0005AC2E /* UIScrollView+Pull.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6C71F53BDDA0005AC2E /* UIScrollView+Pull.swift */; };
-		661EC6CA1F53F4880005AC2E /* WYPushView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6C91F53F4880005AC2E /* WYPushView.swift */; };
+		661EC6CA1F53F4880005AC2E /* WYInfiniteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6C91F53F4880005AC2E /* WYInfiniteView.swift */; };
 		661EC6CE1F5508200005AC2E /* WYRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6CD1F5508200005AC2E /* WYRefresh.swift */; };
+		661EC6D01F5686870005AC2E /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6CF1F5686870005AC2E /* BaseViewController.swift */; };
+		661EC6D21F5689160005AC2E /* TPullTopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6D11F5689160005AC2E /* TPullTopViewController.swift */; };
+		661EC6D41F5689840005AC2E /* TPullBottomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661EC6D31F5689840005AC2E /* TPullBottomViewController.swift */; };
+		665BAE511F569B06006EAA6A /* InfiniteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665BAE501F569B06006EAA6A /* InfiniteViewController.swift */; };
 		667A22D61DDB267E007A754D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22D51DDB267E007A754D /* AppDelegate.swift */; };
 		667A22D81DDB267E007A754D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22D71DDB267E007A754D /* ViewController.swift */; };
 		667A22DD1DDB267E007A754D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 667A22DC1DDB267E007A754D /* Assets.xcassets */; };
@@ -23,10 +27,14 @@
 		3078C16F1DDB501200263528 /* WYPullArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WYPullArrowView.swift; sourceTree = "<group>"; };
 		661EC6C11F53AFA50005AC2E /* WYPullView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WYPullView.swift; sourceTree = "<group>"; };
 		661EC6C31F53B51A0005AC2E /* WYObjectAssociation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WYObjectAssociation.swift; sourceTree = "<group>"; };
-		661EC6C51F53B9440005AC2E /* UIScrollView+Push.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Push.swift"; sourceTree = "<group>"; };
+		661EC6C51F53B9440005AC2E /* UIScrollView+Infinite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Infinite.swift"; sourceTree = "<group>"; };
 		661EC6C71F53BDDA0005AC2E /* UIScrollView+Pull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Pull.swift"; sourceTree = "<group>"; };
-		661EC6C91F53F4880005AC2E /* WYPushView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WYPushView.swift; sourceTree = "<group>"; };
+		661EC6C91F53F4880005AC2E /* WYInfiniteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WYInfiniteView.swift; sourceTree = "<group>"; };
 		661EC6CD1F5508200005AC2E /* WYRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WYRefresh.swift; sourceTree = "<group>"; };
+		661EC6CF1F5686870005AC2E /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		661EC6D11F5689160005AC2E /* TPullTopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPullTopViewController.swift; sourceTree = "<group>"; };
+		661EC6D31F5689840005AC2E /* TPullBottomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPullBottomViewController.swift; sourceTree = "<group>"; };
+		665BAE501F569B06006EAA6A /* InfiniteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteViewController.swift; sourceTree = "<group>"; };
 		667A22D21DDB267E007A754D /* WYRefresh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WYRefresh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		667A22D51DDB267E007A754D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		667A22D71DDB267E007A754D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -66,13 +74,17 @@
 			children = (
 				667A22E11DDB267E007A754D /* Info.plist */,
 				667A22D51DDB267E007A754D /* AppDelegate.swift */,
+				661EC6CF1F5686870005AC2E /* BaseViewController.swift */,
+				665BAE501F569B06006EAA6A /* InfiniteViewController.swift */,
+				661EC6D31F5689840005AC2E /* TPullBottomViewController.swift */,
+				661EC6D11F5689160005AC2E /* TPullTopViewController.swift */,
+				661EC6C51F53B9440005AC2E /* UIScrollView+Infinite.swift */,
 				661EC6C71F53BDDA0005AC2E /* UIScrollView+Pull.swift */,
-				661EC6C51F53B9440005AC2E /* UIScrollView+Push.swift */,
 				667A22D71DDB267E007A754D /* ViewController.swift */,
+				661EC6C91F53F4880005AC2E /* WYInfiniteView.swift */,
 				661EC6C31F53B51A0005AC2E /* WYObjectAssociation.swift */,
 				3078C16F1DDB501200263528 /* WYPullArrowView.swift */,
 				661EC6C11F53AFA50005AC2E /* WYPullView.swift */,
-				661EC6C91F53F4880005AC2E /* WYPushView.swift */,
 				661EC6CD1F5508200005AC2E /* WYRefresh.swift */,
 				667A22DC1DDB267E007A754D /* Assets.xcassets */,
 			);
@@ -152,13 +164,17 @@
 			files = (
 				661EC6C21F53AFA50005AC2E /* WYPullView.swift in Sources */,
 				667A22D81DDB267E007A754D /* ViewController.swift in Sources */,
-				661EC6CA1F53F4880005AC2E /* WYPushView.swift in Sources */,
-				661EC6C61F53B9440005AC2E /* UIScrollView+Push.swift in Sources */,
+				661EC6CA1F53F4880005AC2E /* WYInfiniteView.swift in Sources */,
+				661EC6C61F53B9440005AC2E /* UIScrollView+Infinite.swift in Sources */,
 				667A22D61DDB267E007A754D /* AppDelegate.swift in Sources */,
+				661EC6D21F5689160005AC2E /* TPullTopViewController.swift in Sources */,
+				661EC6D01F5686870005AC2E /* BaseViewController.swift in Sources */,
 				661EC6CE1F5508200005AC2E /* WYRefresh.swift in Sources */,
 				661EC6C41F53B51A0005AC2E /* WYObjectAssociation.swift in Sources */,
+				665BAE511F569B06006EAA6A /* InfiniteViewController.swift in Sources */,
 				661EC6C81F53BDDA0005AC2E /* UIScrollView+Pull.swift in Sources */,
 				3078C1701DDB501200263528 /* WYPullArrowView.swift in Sources */,
+				661EC6D41F5689840005AC2E /* TPullBottomViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
