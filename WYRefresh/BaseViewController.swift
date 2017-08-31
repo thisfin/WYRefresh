@@ -26,7 +26,7 @@ class BaseViewController: UIViewController, UITableViewDelegate {
         tableView.delegate = self;
         self.view.addSubview(tableView);
 
-        (10 ..< 30).forEach({ (i) in
+        (10 ..< 13).forEach({ (i) in
             datas.append(Date(timeIntervalSinceNow: TimeInterval(0 - i * 90)))
         })
     }

@@ -1,5 +1,5 @@
 //
-//  WYRefreshArrow.swift
+//  WYRefreshArrowView.swift
 //  WYRefresh
 //
 //  Created by fin on 2016/11/15.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WYPullArrowView: UIView {
+class WYRefreshArrowView: UIView {
     static let viewSize = CGSize(width: 22, height: 48)
     var arrowColor = UIColor.gray
 

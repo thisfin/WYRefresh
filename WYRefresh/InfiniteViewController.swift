@@ -29,6 +29,6 @@ class InfiniteViewController: BaseViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        tableView.triggerInfiniteScrolling()
+//        tableView.triggerInfiniteScrolling()
     }
 }

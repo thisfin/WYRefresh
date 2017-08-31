@@ -38,9 +38,9 @@ extension ViewController: UITableViewDataSource {
 
         switch indexPath.row {
         case 0:
-            value = "pull top"
+            value = "refresh top"
         case 1:
-            value = "pull bottom"
+            value = "refresh bottom"
         case 2:
             value = "infinite"
         case 3:
@@ -61,11 +61,11 @@ extension ViewController: UITableViewDelegate {
         switch indexPath.row {
         case 0:
             if let navigationController = navigationController {
-                navigationController.pushViewController(TPullTopViewController(), animated: true)
+                navigationController.pushViewController(RefreshTopViewController(), animated: true)
             }
         case 1:
             if let navigationController = navigationController {
-                navigationController.pushViewController(TPullBottomViewController(), animated: true)
+                navigationController.pushViewController(RefreshBottomViewController(), animated: true)
             }
         case 2:
             if let navigationController = navigationController {

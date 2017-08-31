@@ -1,5 +1,5 @@
 //
-//  WYPullView.swift
+//  WYRefreshView.swift
 //  WYRefresh
 //
 //  Created by wenyou on 2017/8/28.
@@ -10,16 +10,15 @@ import UIKit
 
 private var myContext = 0
 
-class WYPullView: UIView {
+class WYRefreshView: UIView {
     static let viewHeight: CGFloat = 60
 
     weak var scrollView: UIScrollView?
-    var pullToRefreshActionHandler: (() -> Void)?
+    var refreshHandler: (() -> Void)?
     var position: WYRefreshPosition = .top
     var originalTopInset: CGFloat = 0
     var originalBottomInset: CGFloat = 0
     var wasTriggeredByUser = true
-    var showsPull = false
     var showsDateLabel = false
     var isObserving = false
 
@@ -41,11 +40,12 @@ class WYPullView: UIView {
                 resetScrollViewContentInset()
             case .stopped:
                 resetScrollViewContentInset()
-            case .triggered: break
+            case .triggered:
+                break
             case .loading:
                 setScrollViewContentInsetForLoading()
-                if oldValue == .triggered && pullToRefreshActionHandler != nil {
-                    pullToRefreshActionHandler!()
+                if let handler = refreshHandler, oldValue == .triggered {
+                    handler()
                 }
             }
         }
@@ -80,8 +80,8 @@ class WYPullView: UIView {
         }
     }
 
-    lazy private var arrowView: WYPullArrowView = {
-        let view = WYPullArrowView(frame: CGRect(x: 0, y: self.bounds.size.height - 54, width: 22, height: 48))
+    lazy private var arrowView: WYRefreshArrowView = {
+        let view = WYRefreshArrowView(frame: CGRect(x: 0, y: self.bounds.size.height - 54, width: 22, height: 48))
         view.backgroundColor = .clear
         self.addSubview(view)
         return view
@@ -110,7 +110,7 @@ class WYPullView: UIView {
         return label
     }()
 
-    var arrowColor: UIColor {
+    public var arrowColor: UIColor {
         get {
             return arrowView.arrowColor;
         }
@@ -119,7 +119,7 @@ class WYPullView: UIView {
             arrowView.setNeedsLayout()
         }
     }
-    var textColor: UIColor {
+    public var textColor: UIColor {
         get {
             return titleLabel.textColor
         }
@@ -128,7 +128,7 @@ class WYPullView: UIView {
             subtitleLabel.textColor = newValue
         }
     }
-    var activityIndicatorViewColor: UIColor {
+    public var activityIndicatorViewColor: UIColor {
         get {
             return activityIndicatorView.color!
         }
@@ -136,7 +136,7 @@ class WYPullView: UIView {
             activityIndicatorView.color = newValue
         }
     }
-    var activityIndicatorViewStyle: UIActivityIndicatorViewStyle {
+    public var activityIndicatorViewStyle: UIActivityIndicatorViewStyle {
         get {
             return activityIndicatorView.activityIndicatorViewStyle
         }
@@ -156,7 +156,7 @@ class WYPullView: UIView {
     }
 
     override func willMove(toSuperview newSuperview: UIView?) {
-        if let scrollView = superview as? UIScrollView, let showsPull = scrollView.showsPull, showsPull, newSuperview == nil, isObserving {
+        if let scrollView = superview as? UIScrollView, let showsRefresh = scrollView.showsRefresh, showsRefresh, newSuperview == nil, isObserving {
             scrollView.removeObserver(self, forKeyPath: "contentOffset")
             scrollView.removeObserver(self, forKeyPath: "contentSize")
             scrollView.removeObserver(self, forKeyPath: "frame")
@@ -296,13 +296,13 @@ class WYPullView: UIView {
             var originY: CGFloat = 0
             switch position {
             case .top:
-                originY = 0 - WYPullView.viewHeight
+                originY = 0 - WYRefreshView.viewHeight
             case .bottom:
                 if let scrollView = scrollView {
-                    originY = max(scrollView.contentSize.height, scrollView.bounds.height, 0)
+                    originY = max(scrollView.contentSize.height, scrollView.bounds.height)
                 }
             }
-            frame = CGRect(x: 0, y: originY, width: bounds.width, height: WYPullView.viewHeight)
+            frame = CGRect(x: 0, y: originY, width: bounds.width, height: WYRefreshView.viewHeight)
         } else if keyPath == "frame" {
             layoutSubviews()
         }
@@ -384,7 +384,7 @@ class WYPullView: UIView {
 
     func triggerRefresh() {
         if let scrollView = scrollView {
-            scrollView.triggerPullToRefresh()
+            scrollView.triggerRefresh()
         }
     }
 
@@ -422,7 +422,7 @@ class WYPullView: UIView {
         }
     }
 
-    func rotateArrow(degrees: CGFloat, hide: Bool) {
+    private func rotateArrow(degrees: CGFloat, hide: Bool) {
         UIView.animate(withDuration: 0.2, delay: 0, options: .allowUserInteraction, animations: {
             self.arrowView.layer.transform = CATransform3DMakeRotation(degrees, 0, 0, 1)
             self.arrowView.layer.opacity = hide ? 0 : 1

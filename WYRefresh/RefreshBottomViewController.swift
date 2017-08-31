@@ -1,5 +1,5 @@
 //
-//  TPullBottomViewController.swift
+//  RefreshBottomViewController.swift
 //  WYRefresh
 //
 //  Created by wenyou on 2017/8/30.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-class TPullBottomViewController: BaseViewController {
+class RefreshBottomViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.addPullToRefreshWithActionHandler(position: .bottom) { [weak self] in
+        tableView.addRefreshWithActionHandler(position: .bottom) { [weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
                 guard let strongSelf = self else {
                     return
@@ -21,7 +21,7 @@ class TPullBottomViewController: BaseViewController {
                 strongSelf.datas.insert(Date(), at: 0)
                 strongSelf.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .bottom)
                 strongSelf.tableView.endUpdates()
-                strongSelf.tableView.pullView?.stopAnimating()
+                strongSelf.tableView.refreshView?.stopAnimating()
             })
         }
     }
@@ -29,6 +29,6 @@ class TPullBottomViewController: BaseViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        tableView.triggerPullToRefresh()
+        tableView.triggerRefresh()
     }
 }

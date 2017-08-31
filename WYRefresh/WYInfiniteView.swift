@@ -16,7 +16,7 @@ class WYInfiniteView: UIView {
     var originalBottomInset: CGFloat = 0
     var isObserving = false
 
-    private var viewForState: [UIView?] = [nil, nil, nil, nil]
+    private var viewForState: [UIView?] = [nil, nil, nil]
 
     var state: WYRefreshState = .stopped {
         didSet {
@@ -32,10 +32,10 @@ class WYInfiniteView: UIView {
 
             if let customView = viewForState[state.rawValue] {
                 addSubview(customView)
-                let origin = CGPoint.init(x: ((bounds.width - customView.bounds.width) / 2).rounded(), y: ((bounds.height - customView.bounds.height) / 2).rounded())
+                let origin = CGPoint(x: ((bounds.width - customView.bounds.width) / 2).rounded(), y: ((bounds.height - customView.bounds.height) / 2).rounded())
                 customView.frame.origin = origin
             } else {
-                let origin = CGPoint.init(x: ((bounds.width - activityIndicatorView.bounds.width) / 2).rounded(), y: ((bounds.height - activityIndicatorView.bounds.height) / 2).rounded())
+                let origin = CGPoint(x: ((bounds.width - activityIndicatorView.bounds.width) / 2).rounded(), y: ((bounds.height - activityIndicatorView.bounds.height) / 2).rounded())
                 activityIndicatorView.frame.origin = origin
 
                 switch state {
@@ -57,13 +57,14 @@ class WYInfiniteView: UIView {
     }
 
     lazy private var activityIndicatorView: UIActivityIndicatorView = { // 如果这里用非 lazy 的时候, self. 会报错, 初始化时机的问题
-        let activityIndicatorView = UIActivityIndicatorView.init(activityIndicatorStyle: .white)
+        let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         activityIndicatorView.hidesWhenStopped = true
         addSubview(activityIndicatorView)
         return activityIndicatorView
     }()
 
-    var activityIndicatorViewStyle: UIActivityIndicatorViewStyle {
+    /// 自定义设置菊花样式
+    public var activityIndicatorViewStyle: UIActivityIndicatorViewStyle {
         get {
             return activityIndicatorView.activityIndicatorViewStyle
         }
@@ -91,20 +92,18 @@ class WYInfiniteView: UIView {
     }
 
     override func layoutSubviews() {
-        activityIndicatorView.center = CGPoint.init(x: bounds.width / 2, y: bounds.height / 2)
+        activityIndicatorView.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath {
-            if keyPath == "contentOffset" {
-                if let value = change?[.newKey] as? CGPoint {
-                    scrollViewDidScroll(contentOffset: value)
-                }
-            } else if keyPath == "contentSize" {
-                layoutSubviews()
-                if let scrollView = scrollView {
-                    frame = CGRect(x: 0, y: scrollView.contentSize.height, width: bounds.width, height: WYInfiniteView.viewHeight)
-                }
+        if keyPath == "contentOffset" {
+            if let value = change?[.newKey] as? CGPoint {
+                scrollViewDidScroll(contentOffset: value)
+            }
+        } else if keyPath == "contentSize" {
+            layoutSubviews()
+            if let scrollView = scrollView {
+                frame = CGRect(x: 0, y: scrollView.contentSize.height, width: bounds.width, height: WYInfiniteView.viewHeight)
             }
         }
     }
@@ -117,7 +116,7 @@ class WYInfiniteView: UIView {
                 state = .loading
             } else if contentOffset.y > scrollOffsetThreshold && state == .stopped && scrollView.isDragging {
                 state = .triggered
-            } else if contentOffset.y < scrollOffsetThreshold  && state != .stopped {
+            } else if contentOffset.y < scrollOffsetThreshold && state != .stopped {
                 state = .stopped
             }
         }
@@ -145,15 +144,13 @@ class WYInfiniteView: UIView {
         })
     }
 
-    func setCustomView(view: UIView?, state: WYRefreshState) {
+    /// 自定义设置菊花 view
+    public func setCustomView(view: UIView?, state: WYRefreshState) {
         if state == .all {
             viewForState.replaceSubrange(0...2, with: [view, view, view])
         } else {
             viewForState[state.rawValue] = view
-            // viewForState.replaceSubrange((state.rawValue)...(state.rawValue + 1), with: [view])
-            // viewForState.replaceSubrange(Range<Int>.init(NSRange.init(location: state.rawValue, length: 1))!, with: [view])
         }
-        // didset func
     }
 
     private func triggerRefresh() {

@@ -1,5 +1,5 @@
 //
-//  UIScrollView+Push.swift
+//  UIScrollView+Infinite.swift
 //  WYRefresh
 //
 //  Created by wenyou on 2017/8/28.
