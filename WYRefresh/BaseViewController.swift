@@ -22,8 +22,9 @@ class BaseViewController: UIViewController, UITableViewDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         tableView = UITableView(frame: view.bounds, style: .plain)
         tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        tableView.dataSource = self;
-        tableView.delegate = self;
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.tableFooterView = UIView()
         self.view.addSubview(tableView);
 
         (10 ..< 13).forEach({ (i) in

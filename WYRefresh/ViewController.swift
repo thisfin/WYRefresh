@@ -71,6 +71,10 @@ extension ViewController: UITableViewDelegate {
             if let navigationController = navigationController {
                 navigationController.pushViewController(InfiniteViewController(), animated: true)
             }
+        case 3:
+            if let navigationController = navigationController {
+                navigationController.pushViewController(InfiniteRefreshViewController(), animated: true)
+            }
         default:
             ()
         }

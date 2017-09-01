@@ -21,6 +21,7 @@
 		667A22D61DDB267E007A754D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22D51DDB267E007A754D /* AppDelegate.swift */; };
 		667A22D81DDB267E007A754D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667A22D71DDB267E007A754D /* ViewController.swift */; };
 		667A22DD1DDB267E007A754D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 667A22DC1DDB267E007A754D /* Assets.xcassets */; };
+		66D04EF21F590BB000996BC7 /* InfiniteRefreshViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D04EF11F590BB000996BC7 /* InfiniteRefreshViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		667A22D71DDB267E007A754D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		667A22DC1DDB267E007A754D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		667A22E11DDB267E007A754D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		66D04EF11F590BB000996BC7 /* InfiniteRefreshViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfiniteRefreshViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 				667A22E11DDB267E007A754D /* Info.plist */,
 				667A22D51DDB267E007A754D /* AppDelegate.swift */,
 				661EC6CF1F5686870005AC2E /* BaseViewController.swift */,
+				66D04EF11F590BB000996BC7 /* InfiniteRefreshViewController.swift */,
 				665BAE501F569B06006EAA6A /* InfiniteViewController.swift */,
 				661EC6D31F5689840005AC2E /* RefreshBottomViewController.swift */,
 				661EC6D11F5689160005AC2E /* RefreshTopViewController.swift */,
@@ -172,6 +175,7 @@
 				661EC6CE1F5508200005AC2E /* WYRefresh.swift in Sources */,
 				661EC6C41F53B51A0005AC2E /* WYObjectAssociation.swift in Sources */,
 				665BAE511F569B06006EAA6A /* InfiniteViewController.swift in Sources */,
+				66D04EF21F590BB000996BC7 /* InfiniteRefreshViewController.swift in Sources */,
 				661EC6C81F53BDDA0005AC2E /* UIScrollView+Refresh.swift in Sources */,
 				3078C1701DDB501200263528 /* WYRefreshArrowView.swift in Sources */,
 				661EC6D41F5689840005AC2E /* RefreshBottomViewController.swift in Sources */,
